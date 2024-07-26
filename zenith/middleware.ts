@@ -1,6 +1,30 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+// Code to protect a few routes(/dashboard in our case) since all other will be public by default.
+
+export default clerkMiddleware((auth, req) => {
+  if (isProtectedRoute(req)) auth().protect();
+});
+
+const isProtectedRoute = createRouteMatcher([
+  '/dashboard(.*)',
+  // '/forum(.*)',
+]);
+
+// Code to protect a few routes(/dashboard in our case) since all other will be public by default.
+
+//Code to make all routes private and a few public
+
+/* const isPublicRoute = createRouteMatcher([
+  '/'
+]);
+
+export default clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) auth().protect();
+}); */
+
+
+//Code to make all routes private and a few public
 
 export const config = {
   matcher: [
@@ -9,4 +33,4 @@ export const config = {
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
-};/*  */
+};
