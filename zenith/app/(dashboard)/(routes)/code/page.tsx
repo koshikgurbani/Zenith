@@ -62,8 +62,8 @@ const CodePage = () => {
     return (
         <div>
             <Heading
-                title="Code Generation"
-                description="Welcome to Zenith Code Forge, where ideas become functional code. Harness the power of AI to generate code snippets, complete projects, or troubleshoot errors in a variety of programming languages. Simply describe your requirements, and watch as Zenith brings your coding vision to life!"
+                title="Zenith Code Forge"
+                description="Welcome to Zenith Code Forge, where your ideas morph into pure, functional brilliance. Our AI writes code faster than you can say 'Hello, World!' Got a problem? Describe it. Watch it get solved. Coding just got a whole lot cooler."
                 icon={Code}
                 iconColor="text-green-500"
                 bgColor="bg-green-700/10"

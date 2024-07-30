@@ -63,8 +63,8 @@ const ConversationPage = () => {
         <div>
             {/* Hello Conversation */}
             <Heading
-                title="Conversation"
-                description="Welcome to the Zenith Chat Hub, where you can engage in dynamic conversations with our advanced AI. Whether you need assistance, want to brainstorm ideas, or just have a friendly chat, our AI is here to respond with intelligence and creativity. Let's talk!"
+                title="Zenith Chat Hub"
+                description="Welcome to Zenith Chat Hub, your AI companion for engaging chats. Need advice, brainstorming, or just some banter? Our AI has got the sass and the smarts to keep up. Let’s talk—Zenith style."
                 icon={MessageSquare}
                 iconColor="text-violet-500"
                 bgColor="bg-violet-500/10"
