@@ -1,10 +1,9 @@
 "use client";
 
 import * as z from "zod"
-import { MessageSquare } from "lucide-react";
+import { Code, Divide } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { ChatCompletionRequestMessage } from "openai"
 import axios from "axios";
 
 import { Heading } from "@/components/heading";
@@ -21,8 +20,9 @@ import Loader from "@/components/loader";
 import { cn } from "@/lib/utils";
 import { BotAvatar } from "@/components/bot-avatar";
 import UserAvatar from "@/components/user-avatar";
+import ReactMarkdown from "react-markdown"
 
-const ConversationPage = () => {
+const CodePage = () => {
     const router = useRouter();
     // const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([])
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([])
@@ -45,7 +45,7 @@ const ConversationPage = () => {
             }
             const newMessages = [...messages, userMessage];
 
-            const response = await axios.post("/api/conversation", {
+            const response = await axios.post("/api/code", {
                 messages: newMessages
             })
 
@@ -61,13 +61,12 @@ const ConversationPage = () => {
 
     return (
         <div>
-            {/* Hello Conversation */}
             <Heading
-                title="Conversation"
-                description="Welcome to the Zenith Chat Hub, where you can engage in dynamic conversations with our advanced AI. Whether you need assistance, want to brainstorm ideas, or just have a friendly chat, our AI is here to respond with intelligence and creativity. Let's talk!"
-                icon={MessageSquare}
-                iconColor="text-violet-500"
-                bgColor="bg-violet-500/10"
+                title="Code Generation"
+                description="Welcome to Zenith Code Forge, where ideas become functional code. Harness the power of AI to generate code snippets, complete projects, or troubleshoot errors in a variety of programming languages. Simply describe your requirements, and watch as Zenith brings your coding vision to life!"
+                icon={Code}
+                iconColor="text-green-500"
+                bgColor="bg-green-700/10"
             />
             <div className="px-4 lg:px-8">
                 <div>
@@ -95,7 +94,7 @@ const ConversationPage = () => {
                                             <Input
                                                 className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                                                 disabled={isLoading}
-                                                placeholder="Let's talk, type here..."
+                                                placeholder="Need a snippet? Type away!"
                                                 {...field}
                                             />
                                         </FormControl>
@@ -120,16 +119,28 @@ const ConversationPage = () => {
                     <div className="flex flex-col-reverse gap-y-4">
                         {messages.map((message) => (
                             <div
-                                key={message.content}
+                                key={message?.content}
                                 className={cn(
                                     "p-8 w-full flex items-start gap-x-8 rounded-lg",
                                     message.role === "user" ? "bg-white border border-black/10" : "bg-muted"
                                 )}
                             >
                                 {message.role === "user" ? <UserAvatar /> : <BotAvatar />}
-                                <p className="text-sm">
-                                    {message.content}
-                                </p>
+                                <ReactMarkdown
+                                components={{
+                                    pre: ({node, ...props}) => (
+                                        <div className="overflow-auto w-full my-2 bg-black/10 p-2 rounded-lg">
+                                            <pre {...props} />
+                                        </div>
+                                    ),
+                                    code: ({node, ...props}) => (
+                                        <code className="bg-black/10 rounder-lg p-1" {...props} />
+                                    )
+                                }}
+                                className="text-sm overflow-hidden leading-7"
+                                >
+                                    {message.content || ""}
+                                </ReactMarkdown>
                             </div>
                         ))}
                     </div>
@@ -139,4 +150,4 @@ const ConversationPage = () => {
     );
 }
 
-export default ConversationPage;
+export default CodePage;
