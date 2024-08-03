@@ -17,8 +17,10 @@ import { useState } from "react";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Empty } from "@/components/empty";
 import Loader from "@/components/loader";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const VideoPage = () => {
+    const proModal = useProModal();
     const router = useRouter();
     const [video, setVideo] = useState<string>()
 
@@ -32,7 +34,6 @@ const VideoPage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log("------------", values);
         try {
             setVideo(undefined)
 
@@ -42,7 +43,9 @@ const VideoPage = () => {
             form.reset();
         } catch (error: any) {
             //TODO: Open Pro Modal
-            console.log("error", error);
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
@@ -107,9 +110,9 @@ const VideoPage = () => {
                         <Empty label="No video generated" />
                     )}
                     {video && (
-                    <video controls className="w-full aspect-video mt-8 rounder-lg border">
-                        <source src={video} />
-                    </video>
+                        <video controls className="w-full aspect-video mt-8 rounder-lg border">
+                            <source src={video} />
+                        </video>
                     )}
                 </div>
             </div>

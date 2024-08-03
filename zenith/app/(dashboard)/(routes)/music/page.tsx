@@ -18,8 +18,10 @@ import { useState } from "react";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { Empty } from "@/components/empty";
 import Loader from "@/components/loader";
+import { useProModal } from "@/hooks/use-pro-modal";
 
 const MusicPage = () => {
+    const proModal = useProModal();
     const router = useRouter();
     const [music, setMusic] = useState<string>()
 
@@ -33,17 +35,18 @@ const MusicPage = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        console.log("------------", values);
         try {
             setMusic(undefined)
 
-            const response = await axios.post("/api/music",values)
+            const response = await axios.post("/api/music", values)
 
             setMusic(response.data.audio)
             form.reset();
         } catch (error: any) {
             //TODO: Open Pro Modal
-            console.log("error", error);
+            if (error?.response?.status === 403) {
+                proModal.onOpen();
+            }
         } finally {
             router.refresh();
         }
@@ -107,11 +110,11 @@ const MusicPage = () => {
                     {!music && !isLoading && (
                         <Empty label="No Music generated" />
                     )}
-                    (music && (
-                        <audio controls className="w-full mt-8">
-                            <source src={music}/>
-                        </audio>
-                    ))
+                    {music && (
+                    <audio controls className="w-full mt-8">
+                        <source src={music} />
+                    </audio>
+                    )}
                 </div>
             </div>
         </div>
