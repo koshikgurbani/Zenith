@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // Code to protect a few routes(/dashboard in our case) since all other will be public by default.
 
-export default clerkMiddleware((auth, req) => {
+/* export default clerkMiddleware((auth, req) => {
   if (isProtectedRoute(req)) auth().protect();
 });
 
@@ -14,19 +14,19 @@ const isProtectedRoute = createRouteMatcher([
   '/image(.*)',
   '/video(.*)',
   // '/forum(.*)',
-]);
+]); */
 
 // Code to protect a few routes(/dashboard in our case) since all other will be public by default.
 
 //Code to make all routes private and a few public
 
-/* const isPublicRoute = createRouteMatcher([
-  '/'
+const isPublicRoute = createRouteMatcher([
+  '/', '/api/webhook', '/sign-in(.*)', '/sign-up(.*)'
 ]);
 
 export default clerkMiddleware((auth, req) => {
   if (!isPublicRoute(req)) auth().protect();
-}); */
+});
 
 
 //Code to make all routes private and a few public

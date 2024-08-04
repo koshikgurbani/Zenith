@@ -4,6 +4,7 @@ import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 // import { Configuration, OpenAIApi } from "openai"
 
 import OpenAI from "openai";
+import { checkSubscription } from "@/lib/subscription";
 
 /* const configuration = new Configuration({
     apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY
@@ -42,7 +43,8 @@ export async function POST(
         }
 
         const freeTrial = await checkApiLimit();
-        if (!freeTrial) {
+        const isPro = await checkSubscription();
+        if (!freeTrial && !isPro) {
             return new NextResponse("You have reached your free trial limit", { status: 403 });
         }
 
@@ -52,8 +54,9 @@ export async function POST(
             n: parseInt(amount, 10),
             size: resolution,
         })
-
-        await increaseApiLimit();
+        if (!isPro) {
+            await increaseApiLimit();
+        }
 
         return NextResponse.json(response.data);
 

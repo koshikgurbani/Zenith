@@ -1,16 +1,17 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import { increaseApiLimit,checkApiLimit } from "@/lib/api-limit";
+import { increaseApiLimit, checkApiLimit } from "@/lib/api-limit";
 
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import { checkSubscription } from "@/lib/subscription";
 
-const openai =  new OpenAI({
-    apiKey:process.env.NEXT_PUBLIC_OPENAI_API_KEY
+const openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY
 })
 
 const instructionMessage: ChatCompletionMessageParam = {
-    role:"system",
+    role: "system",
     content: "Act as a code-generating AI. Respond with markdown code snippets also. Use code comments for explanations. Also provide a brief explaination and some google articles references to follow-up"
 }
 
@@ -32,7 +33,8 @@ export async function POST(
         }
 
         const freeTrial = await checkApiLimit();
-        if (!freeTrial) {
+        const isPro = await checkSubscription();
+        if (!freeTrial && !isPro) {
             return new NextResponse("You have reached your free trial limit", { status: 403 });
         }
 
@@ -40,8 +42,9 @@ export async function POST(
             model: "gpt-3.5-turbo",
             messages: [instructionMessage, ...messages]
         })
-
-        await increaseApiLimit();
+        if (!isPro) {
+            await increaseApiLimit();
+        }
 
         return NextResponse.json(response.choices[0].message);
 
