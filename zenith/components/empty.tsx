@@ -15,6 +15,7 @@ export const Empty = ({
                 alt= "Empty"
                 fill
                 src= "/empty.png"
+                unoptimized
                 />
             </div>
 
